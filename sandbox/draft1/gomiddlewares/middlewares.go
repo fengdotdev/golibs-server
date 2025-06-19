@@ -9,21 +9,19 @@ const (
 	MiddlewareKey = "GoMiddlewareKey"
 )
 
-type HandleFunc func(http.ResponseWriter, *http.Request)
-
 type GoMiddleware struct {
 	Name    string
-	Handler HandleFunc
+	Handler http.HandlerFunc
 }
 
-func NewGoMiddleware(name string, handler HandleFunc) *GoMiddleware {
+func NewGoMiddleware(name string, handler http.HandlerFunc) *GoMiddleware {
 	return &GoMiddleware{
 		Name:    name,
 		Handler: handler,
 	}
 }
 
-func (gm *GoMiddleware) Middleware(next HandleFunc) HandleFunc {
+func (gm *GoMiddleware) Middleware(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		ctx := context.WithValue(r.Context(), MiddlewareKey, gm.Name)
@@ -31,4 +29,8 @@ func (gm *GoMiddleware) Middleware(next HandleFunc) HandleFunc {
 		gm.Handler(w, r)
 		next(w, r)
 	}
+}
+
+func (gm *GoMiddleware) Get() func(http.HandlerFunc) http.HandlerFunc {
+	return gm.Middleware
 }

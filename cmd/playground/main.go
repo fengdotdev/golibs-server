@@ -22,6 +22,11 @@ func main() {
 
 	mygroup := gogroup.NewGoGroup("MyGroup")
 
+	// Add the authentication middleware to the group
+	mygroup.AddGoMiddleware(*authMiddleware)
+
+	my.group.AddHandler("GET", func(w http.ResponseWriter, r *http.Request) {
+
 	// Start the server
 	if err := myServer.Start(); err != nil {
 		panic(err)

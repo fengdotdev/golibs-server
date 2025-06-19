@@ -9,7 +9,7 @@ import (
 type Group struct {
 	Name        string
 	Handlers    []http.HandlerFunc
-	Middlewares []func(http.Handler) http.Handler
+	Middlewares []func(http.HandlerFunc) http.HandlerFunc
 	Methods     []string
 }
 
@@ -17,8 +17,7 @@ func NewGoGroup(name string) *Group {
 	return &Group{
 		Name:        name,
 		Handlers:    make([]http.HandlerFunc, 0),
-		Middlewares: make([]func(http.Handler) http.Handler, 0),
-		Methods:     make([]string, 0),
+		Middlewares: make([]func(http.HandlerFunc) http.HandlerFunc, 0),
 	}
 }
 
@@ -27,14 +26,11 @@ func (g *Group) AddHandler(method string, handler http.HandlerFunc) {
 	g.Handlers = append(g.Handlers, handler)
 }
 
-func (g *Group) AddMiddleware(middleware func(http.Handler) http.Handler) {
+func (g *Group) AddMiddleware(middleware func(http.HandlerFunc) http.HandlerFunc) {
 	g.Middlewares = append(g.Middlewares, middleware)
 }
 func (g *Group) AddGoMiddleware(middleware gomiddlewares.GoMiddleware) {
-	g.Middlewares = append(g.Middlewares, middleware.Middleware(func(next http.Handler) http.Handler {
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			middleware.Handler(w, r)
-			next.ServeHTTP(w, r)
-		})
-	}))
+
+	middlewareFunc := middleware.Get()
+	g.Middlewares = append(g.Middlewares, middlewareFunc)
 }
