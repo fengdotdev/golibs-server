@@ -3,33 +3,25 @@ package main
 import (
 	"net/http"
 
-	"github.com/fengdotdev/golibs-server/sandbox/draft1/gogroup"
-	"github.com/fengdotdev/golibs-server/sandbox/draft1/gomiddlewares"
 	"github.com/fengdotdev/golibs-server/sandbox/draft1/goserver"
 )
 
 func main() {
-	myServer := goserver.NewGoServer()
 
-	authMiddleware := gomiddlewares.NewGoMiddleware("AuthMiddleware", func(w http.ResponseWriter, r *http.Request) {
-		// Example authentication logic
-		token := r.Header.Get("Authorization")
-		if token != "valid-token" {
-			http.Error(w, "Unauthorized", http.StatusUnauthorized)
-			return
-		}
-	})
-
-	mygroup := gogroup.NewGoGroup("MyGroup")
-
-	// Add the authentication middleware to the group
-	mygroup.AddGoMiddleware(*authMiddleware)
-
-	my.group.AddHandler("GET", func(w http.ResponseWriter, r *http.Request) {
-
-	// Start the server
-	if err := myServer.Start(); err != nil {
-		panic(err)
+	err := goserver.GenerateCertForLocalHostIfNotExists()
+	if err != nil {
+		panic("Failed cert or pem" + err.Error())
 	}
 
+	myServer := goserver.NewGoServer()
+
+	myServer.RegisterHandler("/", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("Welcome to the Go Server!"))
+	})
+
+	myServer.RegisterHandler("/hello", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("Hello, World!"))
+	})
+
+	myServer.StartSecure()
 }
