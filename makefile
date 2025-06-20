@@ -73,6 +73,20 @@ STAT = github.com/fengdotdev/golibs-statistics
 # LinealAlgebra: Library for linear algebra operations in Go. <CONCEPT>
 LA = github.com/fengdotdev/golibs-linealalgebra
 
+# Network ------------------------------------------------------------------------------
+
+# Server: Library for server operations in Go. <DEVELOPMENT>
+SERVER = github.com/fengdotdev/golibs-server
+
+# Network: Library for network operations in Go. <DEVELOPMENT>
+NETWORK = github.com/fengdotdev/golibs-network
+
+# RemoteShell: Library for remote shell operations in Go. <DEVELOPMENT>
+REMSHELL = github.com/fengdotdev/golibs-remoteshell
+
+# Protocols: Library for handling various protocols in Go. <CONCEPT>
+PROTOCOLS = github.com/fengdotdev/golibs-protocols
+
 
 # Data Processing Libraries ------------------------------------------------------------------------------
 
